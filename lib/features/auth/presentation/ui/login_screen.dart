@@ -31,25 +31,30 @@ class LoginScreen extends StatelessWidget {
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               direction: Axis.values[1 - orientation.index],
               children: [
-                Image.asset(R.ASSETS_IMAGES_LOGO_PNG),
-                55.allPad,
-                Material(
-                  elevation: 5,
-                  shadowColor: Colors.grey[50],
-                  borderRadius: 20.brc,
-                  child: Container(
-                    width: double.infinity.clamp(0.0, 350),
-                    padding: 30.padH + 40.padV,
-                    decoration: BoxDecoration(
-                      color: AppColors.containerWhite,
+                Expanded(flex: 1, child: Image.asset(R.ASSETS_IMAGES_LOGO_PNG)),
+                Expanded(
+                  flex: 2,
+                  child: Align(
+                    alignment: orientation == Orientation.portrait?  Alignment.topCenter: Alignment.center,
+                    child: Material(
+                      elevation: 5,
+                      shadowColor: Colors.grey[50],
                       borderRadius: 20.brc,
-                    ),
-                    child: BlocConsumer<AuthCubit, AuthStateModel>(
-                      listener: _authCubitListener,
-                      builder: (context, state) {
-                        final cubit = BlocProvider.of<AuthCubit>(context);
-                        return LoginForm(cubit: cubit);
-                      },
+                      child: Container(
+                        width: double.infinity.clamp(0.0, 350),
+                        padding: 30.padH + 40.padV,
+                        decoration: BoxDecoration(
+                          color: AppColors.containerWhite,
+                          borderRadius: 20.brc,
+                        ),
+                        child: BlocConsumer<AuthCubit, AuthStateModel>(
+                          listener: _authCubitListener,
+                          builder: (context, state) {
+                            final cubit = BlocProvider.of<AuthCubit>(context);
+                            return LoginForm(cubit: cubit);
+                          },
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -90,30 +95,34 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        //TODO: Add string literals to seprate file for easier localization impl. in the future
-        const Text("Welcome, log In", style: AppStyles.title),
-        30.vPad,
-        AppTextField(
-          label: "Email Address",
-          onChanged: cubit.onEmailChanged,
-          validationError: cubit.state.email.errorText,
-        ),
-        8.vPad,
-        AppTextField(
-          label: "Password",
-          onChanged: cubit.onPasswordChanged,
-          validationError: cubit.state.password.errorText,
-        ),
-        Padding(
-          padding: 16.padV,
-          child: const Align(
+    return SingleChildScrollView( // For Horizontal view on smaller devices
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          //TODO: Add string literals to seprate file for easier localization impl. in the future
+          const Text("Welcome, log In", style: AppStyles.title),
+          30.vPad,
+          AppTextField(
+            label: "Email Address",
+            onChanged: cubit.onEmailChanged,
+            validationError: cubit.state.email.errorText,
+          ),
+          8.vPad,
+          AppTextField(
+            label: "Password",
+            onChanged: cubit.onPasswordChanged,
+            validationError: cubit.state.password.errorText,
+          ),
+          Padding(
+            padding: 16.padV,
+            child: const Align(
               alignment: AlignmentDirectional.centerEnd,
-              child: Text("Forgot Password?")),
-        ),
-        LoginButton(onTap: cubit.login, state: cubit.state.state)
-      ],
+              child: Text("Forgot Password?"),
+            ),
+          ),
+          LoginButton(onTap: cubit.login, state: cubit.state.state)
+        ],
+      ),
     );
   }
 }
